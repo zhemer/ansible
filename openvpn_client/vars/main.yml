@@ -1,9 +1,2 @@
 ---
 # vars file for openvpn_client
-vpn_server: 8.8.8.8 2195 udp
-vpn_pass_phrase: 1234
-vpn_client_name: client1
-vpn_tmp: /tmp/vpn
-vpn_server_cn: vpn-server.com
-vpn_client_conf_dir: /etc/openvpn
-vpn_client_conf: '{{vpn_client_conf_dir}}/{{vpn_client_name}}.conf'
