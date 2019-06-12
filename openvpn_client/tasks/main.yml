@@ -18,6 +18,10 @@
 #- debug:
 #    msg: "{{ hostvars[inventory_hostname].ansible_distribution_major_version }}"
 
+- name: Checking that file exists - {{vpn_client_conf}}
+  stat: path='{{vpn_client_conf}}'
+  register: rc_vpn_client_conf
+
 
 - name: Generating OpenVPN key cert ca
   shell: |
@@ -33,39 +37,42 @@
   args:
     executable: /usr/bin/bash
     warn: false
+  when: rc_vpn_client_conf.stat.exists == False
 
 - name: Generating OpenVPN tls-auth
   shell: openvpn --genkey --secret '{{vpn_tmp}}/static.key'
+  when: rc_vpn_client_conf.stat.exists == False
 
 
 - name: Gathering OpenVPN key
   shell: cat '{{vpn_tmp}}/pki/private/{{vpn_client_name}}.key'
   register: vpn_priv_key
+  when: rc_vpn_client_conf.stat.exists == False
 
 - name: Gathering OpenVPN cert
   shell: openssl x509 -in '{{vpn_tmp}}/pki/issued/{{vpn_client_name}}.crt'
   register: vpn_cert
+  when: rc_vpn_client_conf.stat.exists == False
 
 - name: Gathering OpenVPN ca
   shell: cat '{{vpn_tmp}}/pki/ca.crt'
   register: vpn_key_ca
+  when: rc_vpn_client_conf.stat.exists == False
 
 - name: Gathering OpenVPN tls-auth
   shell: cat '{{vpn_tmp}}/static.key'
   register: vpn_key_stat
+  when: rc_vpn_client_conf.stat.exists == False
 
-
-- name: openvpn client - creating {{vpn_client_conf_dir}}/{{vpn_client_name}}.conf
-  template:
-    src: openvpn.j2
-    dest: '{{vpn_client_conf_dir}}/{{vpn_client_name}}.conf'
+- name: openvpn client - creating {{vpn_client_conf}}
+  template: src=openvpn.j2 dest='{{vpn_client_conf}}'
   become: yes
+  when: rc_vpn_client_conf.stat.exists == False
 
 - name: Removing {{vpn_tmp}}
   file: state=absent name={{vpn_tmp}}
+  when: rc_vpn_client_conf.stat.exists == False
 
-- name: Starting service openvpn@{{vpn_client_name}}
-  systemd:
-    name: 'openvpn@{{vpn_client_name}}'
-    state: started
-    enabled: yes
+#- name: Restarting service openvpn@{{vpn_client_name}}
+#  systemd: name='openvpn@{{vpn_client_name}}' state=restarted enabled=yes
+#  when: rc_vpn_client_conf.stat.exists == False
