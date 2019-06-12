@@ -65,7 +65,7 @@
   when: rc_vpn_client_conf.stat.exists == False
 
 - name: openvpn client - creating {{vpn_client_conf}}
-  template: src=openvpn.j2 dest='{{vpn_client_conf}}'
+  template: src=openvpn.j2 dest='{{vpn_client_conf}}' mode=400
   become: yes
   when: rc_vpn_client_conf.stat.exists == False
 
@@ -73,6 +73,6 @@
   file: state=absent name={{vpn_tmp}}
   when: rc_vpn_client_conf.stat.exists == False
 
-#- name: Restarting service openvpn@{{vpn_client_name}}
-#  systemd: name='openvpn@{{vpn_client_name}}' state=restarted enabled=yes
-#  when: rc_vpn_client_conf.stat.exists == False
+- name: Restarting service openvpn@{{vpn_client_name}}
+  systemd: name='openvpn@{{vpn_client_name}}' state=restarted enabled=yes
+  when: rc_vpn_client_conf.stat.exists == False
