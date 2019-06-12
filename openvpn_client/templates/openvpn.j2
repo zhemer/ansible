@@ -1,0 +1,29 @@
+client
+nobind
+dev tun
+key-direction 1
+remote-cert-tls server
+
+remote {{vpn_server}}
+
+<key>
+{{vpn_priv_key.stdout}}
+</key>
+
+<cert>
+{{vpn_cert.stdout}}
+</cert>
+
+<ca>
+{{vpn_key_ca.stdout}}
+</ca>
+
+<tls-auth>
+{{vpn_key_stat.stdout}}
+</tls-auth>
+
+key-direction 1
+
+auth-nocache
+comp-lzo
+reneg-sec 259200

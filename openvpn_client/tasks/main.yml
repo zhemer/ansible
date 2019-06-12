@@ -1,0 +1,71 @@
+---
+# tasks file for openvpn_client
+
+- name: Checking for Linux Ubuntu 19
+  fail: msg="This is not Linux Ubuntu 19"
+  when: ansible_distribution != 'Ubuntu'or ansible_distribution_major_version != '19'
+
+- name: openvpn client - installing packages openvpn and easy-rsa
+  package:
+    name:
+    - openssl
+    - openvpn
+    - easy-rsa
+    state: present
+  become: yes
+
+
+#- debug:
+#    msg: "{{ hostvars[inventory_hostname].ansible_distribution_major_version }}"
+
+
+- name: Generating OpenVPN key cert ca
+  shell: |
+    rm -rf '{{vpn_tmp}}'
+    mkdir -p '{{vpn_tmp}}'
+    cp -a /usr/share/easy-rsa/* '{{vpn_tmp}}'
+    cd '{{vpn_tmp}}'
+    sed -i 's/(stty/#&/' easyrsa
+    sed -i 's/\-batch \$opts/& -passin stdin/' easyrsa
+    ./easyrsa init-pki
+    echo -e "{{vpn_pass_phrase}}\n{{vpn_pass_phrase}}\n{{vpn_server_cn}}\n"|./easyrsa build-ca
+    echo -e "{{vpn_pass_phrase}}\n"|./easyrsa build-client-full "{{vpn_client_name}}" nopass
+  args:
+    executable: /usr/bin/bash
+    warn: false
+
+- name: Generating OpenVPN tls-auth
+  shell: openvpn --genkey --secret '{{vpn_tmp}}/static.key'
+
+
+- name: Gathering OpenVPN key
+  shell: cat '{{vpn_tmp}}/pki/private/{{vpn_client_name}}.key'
+  register: vpn_priv_key
+
+- name: Gathering OpenVPN cert
+  shell: openssl x509 -in '{{vpn_tmp}}/pki/issued/{{vpn_client_name}}.crt'
+  register: vpn_cert
+
+- name: Gathering OpenVPN ca
+  shell: cat '{{vpn_tmp}}/pki/ca.crt'
+  register: vpn_key_ca
+
+- name: Gathering OpenVPN tls-auth
+  shell: cat '{{vpn_tmp}}/static.key'
+  register: vpn_key_stat
+
+
+- name: openvpn client - creating {{vpn_client_conf_dir}}/{{vpn_client_name}}.conf
+  template:
+    src: openvpn.j2
+    dest: '{{vpn_client_conf_dir}}/{{vpn_client_name}}.conf'
+  become: yes
+
+- name: Removing {{vpn_tmp}}
+  file: state=absent name={{vpn_tmp}}
+
+- name: Starting service openvpn@{{vpn_client_name}}
+  systemd:
+    name: 'openvpn@{{vpn_client_name}}'
+    state: started
+    enabled: yes

@@ -1,0 +1,16 @@
+---
+
+- hosts: all
+#  vars:
+#    vpn_conf: /tmp/openvpn.conf
+  roles:
+#    - common
+    - role: openvpn_client
+      vars:
+         dir: '/opt/a'
+         app_port: 5000
+#    - role: foo_app_instance
+#      vars:
+#         dir: '/opt/b'
+#         app_port: 5001
+
