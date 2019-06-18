@@ -1,19 +1,24 @@
 ---
-# defaults file for openvpn_client
+# defaults file for openovpnc_client
 
-vpn_server: 8.8.8.8 2195 udp
-vpn_pass_phrase: 1234
-vpn_client_name: client1
-vpn_tmp: /tmp/vpn
-vpn_server_cn: vpn-server.com
-vpn_client_conf_dir: /etc/openvpn
-vpn_client_conf: '{{vpn_client_conf_dir}}/{{vpn_client_name}}.conf'
-os_dist: Ubuntu
-os_dist_ver: 19
+ovpnc_server: 8.8.8.8 2195 udp
+ovpnc_pass_phrase: 1234
+ovpnc_client_name: client1
+ovpnc_tmp: /tmp/vpn
+ovpnc_server_cn: vpn-server.com
+ovpnc_client_conf_dir: /etc/openvpn
+ovpnc_client_conf: '{{ovpnc_client_conf_dir}}/{{ovpnc_client_name}}.conf'
+ovpnc_os_dist: Ubuntu
+ovpnc_os_dist_ver: 19
 
-vpn_conf_gen: False
+ovpnc_inst_packages:
+  - openvpn=2.4.6-1ubuntu3.1 # Fixing version '=ver' for package, remove it if any can be used
+  - openssl
+  - easy-rsa
 
-vpn_priv_key: |
+ovpnc_conf_gen: false
+
+ovpnc_key_priv: |
   -----BEGIN PRIVATE KEY-----
   MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC6oovzo7RCIaad
   fZ8FY7m0++j4OR8wcOYnT9l7Jm4H2bvRy2FtNzptPZiSg+TpV8oPnqIo6ElCiLHS
@@ -43,7 +48,7 @@ vpn_priv_key: |
   zKMH5YyzNqjlOuFt5llWzJKr
   -----END PRIVATE KEY-----
 
-vpn_cert: |
+ovpnc_key_cert: |
   -----BEGIN CERTIFICATE-----
   MIIDQDCCAiigAwIBAgIBAjANBgkqhkiG9w0BAQsFADAWMRQwEgYDVQQDDAtFYXN5
   LVJTQSBDQTAeFw0xNzAxMDMyMTIyNDJaFw0yNzAxMDEyMTIyNDJaMBcxFTATBgNV
@@ -65,7 +70,7 @@ vpn_cert: |
   cgSxv79EkTb3C79KUJTR8obinM8=
   -----END CERTIFICATE-----
 
-vpn_key_ca: |
+ovpnc_key_ca: |
   -----BEGIN CERTIFICATE-----
   MIIDNTCCAh2gAwIBAgIJAMDWGcPiHbnCMA0GCSqGSIb3DQEBCwUAMBYxFDASBgNV
   BAMMC0Vhc3ktUlNBIENBMB4XDTE3MDEwMzIxMTgzMVoXDTI3MDEwMTIxMTgzMVow
@@ -87,7 +92,7 @@ vpn_key_ca: |
   UVF4I3AaI/l+
   -----END CERTIFICATE-----
 
-vpn_key_stat: |
+ovpnc_key_stat: |
   -----BEGIN OpenVPN Static key V1-----
   fb3f3f232aaa6ed4e5ec864d2712c3c0
   7f72d2e8b14e9141404058e3b73b158c

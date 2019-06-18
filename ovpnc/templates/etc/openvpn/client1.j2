@@ -4,22 +4,22 @@ dev tun
 key-direction 1
 remote-cert-tls server
 
-remote {{vpn_server}}
+remote {{ovpnc_server}}
 
 <key>
-{{vpn_priv_key}}
+{{ovpnc_key_priv}}
 </key>
 
 <cert>
-{{vpn_cert}}
+{{ovpnc_key_cert}}
 </cert>
 
 <ca>
-{{vpn_key_ca}}
+{{ovpnc_key_ca}}
 </ca>
 
 <tls-auth>
-{{vpn_key_stat}}
+{{ovpnc_key_stat}}
 </tls-auth>
 
 key-direction 1

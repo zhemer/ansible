@@ -1,0 +1,7 @@
+---
+# handlers file for openovpnc_client
+
+- name: Restarting service - openvpn@{{ovpnc_client_name}}
+  service:
+    name: openvpn@{{ovpnc_client_name}}
+    state: restarted

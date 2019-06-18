@@ -3,7 +3,7 @@
 - name: Installing and configuring openvpn client
   hosts: all
   roles:
-    - role: openvpn_client
+    - role: ovpnc
       vars:
         #os_dist: Amoeba
         #os_dist_ver: 18
