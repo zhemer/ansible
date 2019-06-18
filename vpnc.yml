@@ -5,5 +5,5 @@
   roles:
     - role: ovpnc
       vars:
-        #os_dist: Amoeba
-        #os_dist_ver: 18
+        #ovpnc_os_dist: Amoeba
+        #ovpnc_os_dist_ver: 19

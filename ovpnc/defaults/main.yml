@@ -1,22 +1,43 @@
 ---
-# defaults file for openovpnc_client
+# defaults file for ovpnc
 
-ovpnc_server: 8.8.8.8 2195 udp
-ovpnc_pass_phrase: 1234
-ovpnc_client_name: client1
-ovpnc_tmp: /tmp/vpn
-ovpnc_server_cn: vpn-server.com
+# configuration directory of client
 ovpnc_client_conf_dir: /etc/openvpn
-ovpnc_client_conf: '{{ovpnc_client_conf_dir}}/{{ovpnc_client_name}}.conf'
-ovpnc_os_dist: Ubuntu
-ovpnc_os_dist_ver: 19
 
+# configuration filename
+ovpnc_client_conf: '{{ovpnc_client_conf_dir}}/{{ovpnc_client_name}}.conf'
+
+# client's name
+ovpnc_client_name: client1
+
+# generate all keys and certificates from scratch (true) or use supplied here
+ovpnc_conf_gen: false
+
+# packages to install
 ovpnc_inst_packages:
   - openvpn=2.4.6-1ubuntu3.1 # Fixing version '=ver' for package, remove it if any can be used
   - openssl
   - easy-rsa
 
-ovpnc_conf_gen: false
+# OS distribution
+ovpnc_os_dist: Ubuntu
+
+# OS distribution's version
+ovpnc_os_dist_ver: 16
+
+# pass phrase for CA certificate
+ovpnc_pass_phrase: 1234
+
+# VPN server's address, port and protocol
+ovpnc_server: 8.8.8.8 2195 udp
+
+# Common name of the server
+ovpnc_server_cn: vpn-server.com
+
+# Playbook temporary directory
+ovpnc_tmp: /tmp/vpn
+
+# Various client keys
 
 ovpnc_key_priv: |
   -----BEGIN PRIVATE KEY-----

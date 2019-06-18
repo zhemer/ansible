@@ -1,8 +1,8 @@
 ---
-# tasks file for openovpnc_client
+# tasks file for ovpnc
 
 - name: Checking for Linux Ubuntu {{ovpnc_os_dist_ver}}
-  fail: msg='This is not Linux Ubuntu {{ovpnc_os_dist_ver}} (required {{ovpnc_os_dist}} {{ovpnc_os_dist_ver}})'
+  fail: msg='This is not Linux {{ovpnc_os_dist}} {{ovpnc_os_dist_ver}}'
   when: ansible_distribution != '{{ovpnc_os_dist}}' or ansible_distribution_major_version != '{{ovpnc_os_dist_ver}}'
 
 - name: openvpn client - installing packages {{ovpnc_inst_packages}}
@@ -23,13 +23,9 @@
   with_items:
   - 'etc/openvpn/{{ovpnc_client_name}}'
   become: yes
-#  register: rc_ovpnc_conf_create
   when: rc_ovpnc_client_conf.stat.exists == false
   notify:
     - Restarting service - openvpn@{{ovpnc_client_name}}
 
-#- fail:
-
 - name: Enabling and running service - openvpn@{{ovpnc_client_name}}
   systemd: name='openvpn@{{ovpnc_client_name}}' state=started enabled=yes
-#  when: rc_ovpnc_conf_create.changed

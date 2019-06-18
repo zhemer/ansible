@@ -1,31 +1,68 @@
-Role Name
-=========
+Role ovpnc
+==========
 
-A brief description of the role goes here.
+The role allows to install and configure openvpn client on Linux host
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+None.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+# configuration directory of client
+ovpnc_client_conf_dir: /etc/openvpn
+
+# configuration filename
+ovpnc_client_conf: '{{ovpnc_client_conf_dir}}/{{ovpnc_client_name}}.conf'
+
+# client's name
+ovpnc_client_name: client1
+
+# generate all keys and certificates from scratch (true) or use supplied here
+ovpnc_conf_gen: false
+
+# packages to install
+ovpnc_inst_packages:
+
+# OS distribution
+ovpnc_os_dist: Ubuntu
+
+# OS distribution's version
+ovpnc_os_dist_ver: 16
+
+# pass phrase for CA certificate
+ovpnc_pass_phrase: 1234
+
+# VPN server's address, port and protocol
+ovpnc_server: 8.8.8.8 2195 udp
+
+# Common name of the server
+ovpnc_server_cn: vpn-server.com
+
+# Playbook temporary directory
+ovpnc_tmp: /tmp/vpn
+
+# Various client keys
+ovpnc_key_priv:
+ovpnc_key_cert:
+ovpnc_key_ca:
+ovpnc_key_stat:
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None.
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Example of how to use the role:
 
-    - hosts: servers
+    - hosts: localhost
       roles:
-         - { role: username.rolename, x: 42 }
+         - { role: ovpnc, ovpnc_os_dist: Ubuntu, ovpnc_os_dist_dist: 19 }
 
 License
 -------

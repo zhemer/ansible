@@ -1,5 +1,5 @@
 ---
-# tasks file for openovpnc_client
+# tasks file for ovpnc
 
 - name: Generating OpenVPN key cert ca
   shell: |

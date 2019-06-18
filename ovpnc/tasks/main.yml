@@ -1,5 +1,5 @@
 ---
-# tasks file for openovpnc_client
+# tasks file for ovpnc
 
 - include: ubuntu.yml
   when: ansible_distribution == "Ubuntu"

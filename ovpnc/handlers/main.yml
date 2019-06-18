@@ -1,5 +1,5 @@
 ---
-# handlers file for openovpnc_client
+# handlers file for ovpnc
 
 - name: Restarting service - openvpn@{{ovpnc_client_name}}
   service:
