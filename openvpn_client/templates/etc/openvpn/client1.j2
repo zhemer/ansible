@@ -7,19 +7,19 @@ remote-cert-tls server
 remote {{vpn_server}}
 
 <key>
-{{vpn_priv_key.stdout}}
+{{vpn_priv_key}}
 </key>
 
 <cert>
-{{vpn_cert.stdout}}
+{{vpn_cert}}
 </cert>
 
 <ca>
-{{vpn_key_ca.stdout}}
+{{vpn_key_ca}}
 </ca>
 
 <tls-auth>
-{{vpn_key_stat.stdout}}
+{{vpn_key_stat}}
 </tls-auth>
 
 key-direction 1

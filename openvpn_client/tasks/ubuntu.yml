@@ -16,11 +16,17 @@
 
 
 #- debug:
-#    msg: "{{ hostvars[inventory_hostname].ansible_distribution_major_version }}"
+#    msg: "{{ lookup('file', '/etc/issue') }}"
 
 - name: Checking that file exists - {{vpn_client_conf}}
   stat: path='{{vpn_client_conf}}'
   register: rc_vpn_client_conf
+
+#- name: lookup
+#  shell: "echo Performing lookup {{ lookup('file', '/etc/issue') }}"
+
+#- name: fail
+#  fail:
 
 
 - name: Generating OpenVPN key cert ca
@@ -44,34 +50,52 @@
   when: rc_vpn_client_conf.stat.exists == False
 
 
+
 - name: Gathering OpenVPN key
   shell: cat '{{vpn_tmp}}/pki/private/{{vpn_client_name}}.key'
-  register: vpn_priv_key
+  register: vpn_priv_key1
   when: rc_vpn_client_conf.stat.exists == False
 
 - name: Gathering OpenVPN cert
   shell: openssl x509 -in '{{vpn_tmp}}/pki/issued/{{vpn_client_name}}.crt'
-  register: vpn_cert
+  register: vpn_cert1
   when: rc_vpn_client_conf.stat.exists == False
 
 - name: Gathering OpenVPN ca
   shell: cat '{{vpn_tmp}}/pki/ca.crt'
-  register: vpn_key_ca
+  register: vpn_key_ca1
   when: rc_vpn_client_conf.stat.exists == False
 
 - name: Gathering OpenVPN tls-auth
   shell: cat '{{vpn_tmp}}/static.key'
-  register: vpn_key_stat
+  register: vpn_key_stat1
   when: rc_vpn_client_conf.stat.exists == False
 
+#- debug: msg="{{ lookup('vars', vpn_key_stat1.stdout) }}"
+#  with_items:
+#  - vpn_key_stat
+
+- name: Setting variables vpn_*1.stdout => vpn_*
+  set_fact: {'{{item}}':"{{ vars[item+'1'].stdout }}"}
+  with_items:
+  - vpn_priv_key
+  - vpn_cert
+  - vpn_key_ca
+  - vpn_key_stat
+
+
 - name: openvpn client - creating {{vpn_client_conf}}
-  template: src=openvpn.j2 dest='{{vpn_client_conf}}' mode=400
+  template: src="{{ item }}.j2" dest="/{{ item }}.conf" mode=400
+  with_items:
+  - 'etc/openvpn/{{vpn_client_name}}'
   become: yes
   when: rc_vpn_client_conf.stat.exists == False
 
 - name: Removing {{vpn_tmp}}
   file: state=absent name={{vpn_tmp}}
   when: rc_vpn_client_conf.stat.exists == False
+
+- fail:
 
 - name: Restarting service openvpn@{{vpn_client_name}}
   systemd: name='openvpn@{{vpn_client_name}}' state=restarted enabled=yes
