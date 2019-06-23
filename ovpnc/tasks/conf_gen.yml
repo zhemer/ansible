@@ -1,7 +1,7 @@
 ---
 # tasks file for ovpnc
 
-- name: openvpn client - installing package easy-rsa
+- name: Installing package easy-rsa
   apt:
     name: easy-rsa
     state: present
@@ -21,32 +21,25 @@
   args:
     executable: /usr/bin/bash
     warn: false
-  when: rc_ovpnc_client_conf.stat.exists == false
 
 - name: Generating OpenVPN tls-auth
   shell: openvpn --genkey --secret '{{ovpnc_tmp}}/static.key'
-  when: rc_ovpnc_client_conf.stat.exists == false
-
 
 - name: Gathering OpenVPN key
   shell: cat '{{ovpnc_tmp}}/pki/private/{{ovpnc_client_name}}.key'
   register: ovpnc_key_priv1
-  when: rc_ovpnc_client_conf.stat.exists == false
 
 - name: Gathering OpenVPN cert
   shell: openssl x509 -in '{{ovpnc_tmp}}/pki/issued/{{ovpnc_client_name}}.crt'
   register: ovpnc_key_cert1
-  when: rc_ovpnc_client_conf.stat.exists == false
 
 - name: Gathering OpenVPN ca
   shell: cat '{{ovpnc_tmp}}/pki/ca.crt'
   register: ovpnc_key_ca1
-  when: rc_ovpnc_client_conf.stat.exists == false
 
 - name: Gathering OpenVPN tls-auth
   shell: cat '{{ovpnc_tmp}}/static.key'
   register: ovpnc_key_stat1
-  when: rc_ovpnc_client_conf.stat.exists == false
 
 - name: Setting variables ovpnc_*1.stdout => vpn_*
   set_fact: {'{{item}}':"{{ vars[item+'1'].stdout }}"}
@@ -55,8 +48,6 @@
   - ovpnc_key_cert
   - ovpnc_key_ca
   - ovpnc_key_stat
-  when: rc_ovpnc_client_conf.stat.exists == false
 
 - name: Removing {{ovpnc_tmp}}
   file: state=absent name={{ovpnc_tmp}}
-  when: rc_ovpnc_client_conf.stat.exists == false

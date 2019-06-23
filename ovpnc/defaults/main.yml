@@ -15,16 +15,14 @@ ovpnc_conf_gen: false
 
 # packages to install
 ovpnc_inst_packages:
-#  - openvpn=2.3.10-1ubuntu2.2 # Fixing version '=ver' for package, remove it if any can be used
-  - openvpn
+  - openvpn=2.3.10-1ubuntu2.2 # Fixing version '=ver' for package, remove it if any can be used
   - openssl
 
 # OS distribution
 ovpnc_os_dist: Ubuntu
 
 # OS distribution's version
-#ovpnc_os_dist_ver: 16
-ovpnc_os_dist_ver: 19
+ovpnc_os_dist_ver: 16
 
 # pass phrase for CA certificate
 ovpnc_pass_phrase: 1234

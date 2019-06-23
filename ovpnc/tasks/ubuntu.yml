@@ -5,7 +5,7 @@
   fail: msg='This is not Linux {{ovpnc_os_dist}} {{ovpnc_os_dist_ver}}'
   when: ansible_distribution_major_version != r_ovpnc_os_dist_ver.stdout
 
-- name: openvpn client - installing packages {{ovpnc_inst_packages}}
+- name: Installing packages {{ovpnc_inst_packages}}
   apt:
     name: '{{ovpnc_inst_packages}}'
     state: present
@@ -16,10 +16,8 @@
   register: rc_ovpnc_client_conf
 
 - include: conf_gen.yml
-  when: ovpnc_conf_gen == true and rc_ovpnc_client_conf.stat.exists == false
+  when: ovpnc_conf_gen == true
 
-
-#- debug: msg='{{rc_date.stdout_lines}}'
 
 - name: Getting current Unix time
   shell: date +'%s'
