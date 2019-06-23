@@ -1,5 +1,14 @@
 ---
 # tasks file for ovpnc
 
+- name: Registering jinja2 variable ovpnc_os_dist='{{ovpnc_os_dist}}'
+  shell: echo '{{ovpnc_os_dist}}'
+  register: r_ovpnc_os_dist
+
+- name: Registering jinja2 variable ovpnc_os_dist_ver='{{ovpnc_os_dist_ver}}'
+  shell: echo '{{ovpnc_os_dist_ver}}'
+  register: r_ovpnc_os_dist_ver
+
 - include: ubuntu.yml
-  when: ansible_distribution == "Ubuntu"
+  when: ansible_distribution == r_ovpnc_os_dist.stdout
+

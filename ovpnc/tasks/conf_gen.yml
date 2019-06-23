@@ -1,6 +1,12 @@
 ---
 # tasks file for ovpnc
 
+- name: openvpn client - installing package easy-rsa
+  apt:
+    name: easy-rsa
+    state: present
+  become: yes
+
 - name: Generating OpenVPN key cert ca
   shell: |
     rm -rf '{{ovpnc_tmp}}'
