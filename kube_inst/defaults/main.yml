@@ -1,0 +1,33 @@
+---
+# defaults file for aws
+
+repo_kubernetes_apt: 'deb https://apt.kubernetes.io/ kubernetes-xenial main'
+
+# packages to install
+inst_packages:
+  - docker
+  - kubelet
+  - kubeadm
+  - kubectl
+
+
+cmd_kube_pull: kubeadm config images pull
+
+#cmd_kube_init: kubeadm init --ignore-preflight-errors=NumCPU,swap --pod-network-cidr=192.168.0.0/16
+cmd_kube_init: kubeadm init --ignore-preflight-errors=NumCPU,swap --pod-network-cidr=10.244.0.0/16
+#cmd_kube_init: kubeadm init --ignore-preflight-errors=NumCPU,swap --pod-network-cidr=10.217.0.0/16
+
+cmd_kube_getall: kubectl get all --all-namespaces
+cmd_kube_taint: kubectl taint nodes --all node-role.kubernetes.io/master-
+
+#cmd_kube_pod_network: kubectl apply -f https://docs.projectcalico.org/v3.7/manifests/calico.yaml
+#cmd_kube_pod_network: kubectl apply -f https://docs.projectcalico.org/v3.7/manifests/canal.yaml
+#cmd_kube_pod_network: kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/v1.5/examples/kubernetes/1.14/cilium.yaml
+cmd_kube_pod_network: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/62e44c867a2846fefb68bd5f178daf4da3095ccb/Documentation/kube-flannel.yml
+cmd_kube_pod_network_rm_ds: kubectl delete -n kube-system daemonset.apps/kube-flannel-ds-{s390x,ppc64le,arm64,arm}
+
+kube_inst_ms_git: https://github.com/kubernetes-incubator/metrics-server.git
+kube_inst_ms_dir: metrics-server-tmp
+kube_inst_ms_inst: kubectl apply -f {{kube_inst_ms_dir}}/deploy/1.8+/
+kube_inst_ms_inst_patch: kubectl patch deploy metrics-server -p "$(cat {{kube_inst_ms_dir}}/k8s-metrics-server.patch.yaml)" -n kube-system
+kube_inst_ms_check: kubectl top pod -n kube-system

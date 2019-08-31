@@ -1,3 +1,4 @@
-inv
+inv*
+aws*
 *.retry
 set_sudoer.yml
