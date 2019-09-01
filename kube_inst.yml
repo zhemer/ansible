@@ -1,6 +1,6 @@
 ---
 
-- name: Deploying local Kubernetes cluster (for development purposes only)
+- name: Deploying Kubernetes cluster on host (for development purposes only)
   hosts: all
   roles:
     - role: kube_inst
