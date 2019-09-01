@@ -1,51 +1,8 @@
 ---
-# tasks file for aws
-
-- name: Removing directory '{{kube_inst_ms_dir}}'
-  file:
-    path: '{{kube_inst_ms_dir}}'
-    state: absent
-
-- name: Cloning repository '{{kube_inst_ms_git}}' into directory '{{kube_inst_ms_dir}}'
-  git:
-    repo: '{{kube_inst_ms_git}}'
-    dest: '{{kube_inst_ms_dir}}'
-    clone: yes
-  register: rc
-- debug: msg='{{rc}}'
-
-- name: Kubernetes - installing metrics-server - '{{kube_inst_ms_inst}}'
-  shell: '{{kube_inst_ms_inst}}'
-  register: rc
-- debug: msg='{{rc.stdout_lines}}'
+# tasks file for kube_inst
 
 
-- name: Download https://gist.githubusercontent.com/initcron/1a2bd25353e1faa22a0ad41ad1c01b62/raw/008e23f9fbf4d7e2cf79df1dd008de2f1db62a10/k8s-metrics-server.patch.yaml into directory '{{kube_inst_ms_dir}}'
-  get_url:
-    url: 'https://gist.githubusercontent.com/initcron/1a2bd25353e1faa22a0ad41ad1c01b62/raw/008e23f9fbf4d7e2cf79df1dd008de2f1db62a10/k8s-metrics-server.patch.yaml'
-    dest: '{{kube_inst_ms_dir}}/k8s-metrics-server.patch.yaml'
-    force: yes
-
-- name: Kubernetes - appllying metrics-server patch - '{{kube_inst_ms_inst_patch}}'
-  shell: '{{kube_inst_ms_inst_patch}}'
-  register: rc
-- debug: msg='{{rc.stdout_lines}}'
-
-- name: Removing directory '{{kube_inst_ms_dir}}'
-  file:
-    path: '{{kube_inst_ms_dir}}'
-    state: absent
-
-- name: Kubernetes - checking 'kubectl top' - '{{kube_inst_ms_check}}'
-  shell: '{{kube_inst_ms_check}}'
-  register: rc
-- debug: msg='{{rc.stdout_lines}}'
-
-
-- fail: msg='Force fail here'
-
-
-
+# Adding Kubernetes repository, installing Kubernetes and initializing local one node cluster
 
 - name: Adding repository '{{repo_kubernetes_apt}}'
   apt_repository:
@@ -120,5 +77,47 @@
 
 - name: Kubernetes - running '{{cmd_kube_getall}}'
   shell: '{{cmd_kube_getall}}'
+  register: rc
+- debug: msg='{{rc.stdout_lines}}'
+
+
+# Installing and patching metrics-server
+
+- name: Removing directory '{{kube_inst_ms_dir}}'
+  file:
+    path: '{{kube_inst_ms_dir}}'
+    state: absent
+
+- name: Cloning repository '{{kube_inst_ms_git}}' into directory '{{kube_inst_ms_dir}}'
+  git:
+    repo: '{{kube_inst_ms_git}}'
+    dest: '{{kube_inst_ms_dir}}'
+    clone: yes
+  register: rc
+- debug: msg='{{rc}}'
+
+- name: Kubernetes - installing metrics-server - '{{kube_inst_ms_inst}}'
+  shell: '{{kube_inst_ms_inst}}'
+  register: rc
+- debug: msg='{{rc.stdout_lines}}'
+
+- name: Downloading '{{kube_inst_ms_patch_file}}' into directory '{{kube_inst_ms_dir}}'
+  get_url:
+    url: '{{kube_inst_ms_patch_file}}'
+    dest: '{{kube_inst_ms_dir}}/k8s-metrics-server.patch.yaml'
+    force: yes
+
+- name: Kubernetes - appllying metrics-server patch - '{{kube_inst_ms_patch_inst}}'
+  shell: '{{kube_inst_ms_patch_inst}}'
+  register: rc
+- debug: msg='{{rc.stdout_lines}}'
+
+- name: Removing directory '{{kube_inst_ms_dir}}'
+  file:
+    path: '{{kube_inst_ms_dir}}'
+    state: absent
+
+- name: Kubernetes - checking 'kubectl top' - '{{kube_inst_ms_check}}'
+  shell: '{{kube_inst_ms_check}}'
   register: rc
 - debug: msg='{{rc.stdout_lines}}'

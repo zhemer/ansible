@@ -1,9 +1,6 @@
 ---
 
-- name: Deploying local Kubernetes cluster (development only)
+- name: Deploying local Kubernetes cluster (for development purposes only)
   hosts: all
   roles:
     - role: kube_inst
-      vars:
-        #ovpnc_os_dist: Amoeba
-        #ovpnc_os_dist_ver: 19
