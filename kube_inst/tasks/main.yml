@@ -1,6 +1,7 @@
----
+
 # tasks file for kube_inst
 
+#- fail: msg='Force exit here'
 
 # Adding Kubernetes repository, installing Kubernetes and initializing local one node cluster
 
@@ -119,5 +120,11 @@
 
 - name: Kubernetes - checking 'kubectl top' - '{{kube_inst_ms_check}}'
   shell: '{{kube_inst_ms_check}}'
+  register: rc
+- debug: msg='{{rc.stdout_lines}}'
+
+# Adding local storage class
+- name: Kubernetes - adding local storage class '{{kube_inst_add_sc}}'
+  shell: '{{kube_inst_add_sc}}'
   register: rc
 - debug: msg='{{rc.stdout_lines}}'

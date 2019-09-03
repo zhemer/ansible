@@ -24,3 +24,4 @@ kube_inst_ms_inst: kubectl apply -f {{kube_inst_ms_dir}}/deploy/1.8+/
 kube_inst_ms_patch_file: https://gist.githubusercontent.com/initcron/1a2bd25353e1faa22a0ad41ad1c01b62/raw/008e23f9fbf4d7e2cf79df1dd008de2f1db62a10/k8s-metrics-server.patch.yaml
 kube_inst_ms_patch_inst: kubectl patch deploy metrics-server -p "$(cat {{kube_inst_ms_dir}}/k8s-metrics-server.patch.yaml)" -n kube-system
 kube_inst_ms_check: kubectl top pod -n kube-system
+kube_inst_add_sc: kubectl apply -f {{role_path}}/files/sc-local-storage.yaml
