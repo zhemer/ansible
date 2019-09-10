@@ -41,6 +41,7 @@
   command: '{{cmd_kube_init}}'
   become: yes
   register: rc
+  ignore_errors: true
 - debug: msg='{{rc.stdout_lines}}'
 
 - name: Kubernetes - setup configuration for current user - {{ansible_user_id}}
@@ -60,6 +61,7 @@
 - name: Kubernetes - enable to schedule pods on the control-plane - '{{cmd_kube_taint}}'
   shell: '{{cmd_kube_taint}}'
   register: rc
+  ignore_errors: true
 - debug: msg='{{rc.stdout_lines}}'
 
 
@@ -123,8 +125,10 @@
   register: rc
 - debug: msg='{{rc.stdout_lines}}'
 
-# Adding local storage class
-- name: Kubernetes - adding local storage class '{{kube_inst_add_sc}}'
-  shell: '{{kube_inst_add_sc}}'
+ Adding local storage class
+- name: Kubernetes - adding local storage class and making it default
+  shell:
+    '{{kube_inst_add_sc}}'
+#    kubectl patch storageclass local-storage -p "{metadata:{annotations:{storageclass.kubernetes.io/is-default-class:true}}}"
   register: rc
 - debug: msg='{{rc.stdout_lines}}'
